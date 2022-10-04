@@ -26,7 +26,7 @@
  */
 #define EPNUM_MSC 0x03
 
-#define EPNUM_HID 0x81
+#define EPNUM_HID 0x04
 
 #ifdef __cplusplus
 extern "C" {
