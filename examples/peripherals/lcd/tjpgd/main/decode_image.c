@@ -27,8 +27,8 @@ extern const uint8_t image_jpg_start[] asm("_binary_image_jpg_start");
 extern const uint8_t image_jpg_end[] asm("_binary_image_jpg_end");
 //Define the height and width of the jpeg file. Make sure this matches the actual jpeg
 //dimensions.
-#define IMAGE_W 336
-#define IMAGE_H 256
+#define IMAGE_W 176
+#define IMAGE_H 144
 
 const char *TAG = "ImageDec";
 

@@ -36,39 +36,42 @@ static void anim_timer_cb(lv_timer_t *timer)
     lv_obj_t *scr = timer_ctx->scr;
 
     // Play arc animation
-    if (count < 90) {
+    /*if (count < 90) {*/
         lv_coord_t arc_start = count > 0 ? (1 - cosf(count / 180.0f * PI)) * 270 : 0;
         lv_coord_t arc_len = (sinf(count / 180.0f * PI) + 1) * 135;
 
         for (size_t i = 0; i < sizeof(arc) / sizeof(arc[0]); i++) {
             lv_arc_set_bg_angles(arc[i], arc_start, arc_len);
-            lv_arc_set_rotation(arc[i], (count + 120 * (i + 1)) % 360);
+            //lv_arc_set_rotation(arc[i], (count + 120 * (i + 1)) % 360);
         }
-    }
+    //}
 
     // Delete arcs when animation finished
     if (count == 90) {
         for (size_t i = 0; i < sizeof(arc) / sizeof(arc[0]); i++) {
-            lv_obj_del(arc[i]);
+            //lv_obj_del(arc[i]);
         }
 
+        if (!img_text) {
         // Create new image and make it transparent
         img_text = lv_img_create(scr);
         lv_img_set_src(img_text, &esp_text);
-        lv_obj_set_style_img_opa(img_text, 0, 0);
+        lv_obj_set_style_img_opa(img_text, 255, 0);
+        lv_obj_align(img_text, LV_ALIGN_CENTER, 0, 0);
+        }
     }
 
     // Move images when arc animation finished
-    if ((count >= 100) && (count <= 180)) {
+    /*if ((count >= 100) && (count <= 180)) {
         lv_coord_t offset = (sinf((count - 140) * 2.25f / 90.0f) + 1) * 20.0f;
         lv_obj_align(img_logo, LV_ALIGN_CENTER, 0, -offset);
         lv_obj_align(img_text, LV_ALIGN_CENTER, 0, 2 * offset);
         lv_obj_set_style_img_opa(img_text, offset / 40.0f * 255, 0);
-    }
+    }*/
 
     // Delete timer when all animation finished
     if ((count += 5) == 220) {
-        lv_timer_del(timer);
+        timer_ctx->count_val = count;
     } else {
         timer_ctx->count_val = count;
     }
@@ -86,8 +89,8 @@ void example_lvgl_demo_ui(lv_obj_t *scr)
         arc[i] = lv_arc_create(scr);
 
         // Set arc caption
-        lv_obj_set_size(arc[i], 220 - 30 * i, 220 - 30 * i);
-        lv_arc_set_bg_angles(arc[i], 120 * i, 10 + 120 * i);
+        lv_obj_set_size(arc[i], 150 - 30 * i, 150 - 30 * i);
+        lv_arc_set_bg_angles(arc[i], 120 * i, 120 + 120 * i);
         lv_arc_set_value(arc[i], 0);
 
         // Set arc style
@@ -104,5 +107,5 @@ void example_lvgl_demo_ui(lv_obj_t *scr)
         .count_val = -90,
     };
     my_tim_ctx.scr = scr;
-    lv_timer_create(anim_timer_cb, 20, &my_tim_ctx);
+    //lv_timer_create(anim_timer_cb, 20, &my_tim_ctx);
 }

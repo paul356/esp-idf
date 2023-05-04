@@ -32,16 +32,16 @@
 #define EXAMPLE_LCD_PIXEL_CLOCK_HZ (10 * 1000 * 1000)
 #define EXAMPLE_LCD_BK_LIGHT_ON_LEVEL  0
 #define EXAMPLE_LCD_BK_LIGHT_OFF_LEVEL !EXAMPLE_LCD_BK_LIGHT_ON_LEVEL
-#define EXAMPLE_PIN_NUM_DATA0          23  /*!< for 1-line SPI, this also refered as MOSI */
-#define EXAMPLE_PIN_NUM_PCLK           19
-#define EXAMPLE_PIN_NUM_CS             22
-#define EXAMPLE_PIN_NUM_DC             21
-#define EXAMPLE_PIN_NUM_RST            18
-#define EXAMPLE_PIN_NUM_BK_LIGHT       5
+#define EXAMPLE_PIN_NUM_DATA0          11  /*!< for 1-line SPI, this also refered as MOSI */
+#define EXAMPLE_PIN_NUM_PCLK           12
+#define EXAMPLE_PIN_NUM_CS             10
+#define EXAMPLE_PIN_NUM_DC             13
+#define EXAMPLE_PIN_NUM_RST            14
+#define EXAMPLE_PIN_NUM_BK_LIGHT       -1
 
 // The pixel number in horizontal and vertical
-#define EXAMPLE_LCD_H_RES              320
-#define EXAMPLE_LCD_V_RES              240
+#define EXAMPLE_LCD_H_RES              160
+#define EXAMPLE_LCD_V_RES              128
 // Bit number used to represent command and parameter
 #define EXAMPLE_LCD_CMD_BITS           8
 #define EXAMPLE_LCD_PARAM_BITS         8
@@ -83,12 +83,12 @@ static void display_pretty_colors(esp_lcd_panel_handle_t panel_handle)
 
 void app_main(void)
 {
-    gpio_config_t bk_gpio_config = {
+    /*gpio_config_t bk_gpio_config = {
         .mode = GPIO_MODE_OUTPUT,
         .pin_bit_mask = 1ULL << EXAMPLE_PIN_NUM_BK_LIGHT
     };
     // Initialize the GPIO of backlight
-    ESP_ERROR_CHECK(gpio_config(&bk_gpio_config));
+    ESP_ERROR_CHECK(gpio_config(&bk_gpio_config));*/
 
     spi_bus_config_t buscfg = {
         .sclk_io_num = EXAMPLE_PIN_NUM_PCLK,
@@ -131,15 +131,15 @@ void app_main(void)
     esp_lcd_panel_handle_t panel_handle = NULL;
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = EXAMPLE_PIN_NUM_RST,
-        .color_space = ESP_LCD_COLOR_SPACE_BGR,
+        .color_space = ESP_LCD_COLOR_SPACE_RGB,
         .bits_per_pixel = 16,
     };
     // Initialize the LCD configuration
-    ESP_ERROR_CHECK(esp_lcd_new_panel_st7789(io_handle, &panel_config, &panel_handle));
+    ESP_ERROR_CHECK(esp_lcd_new_panel_st7735(io_handle, &panel_config, &panel_handle));
 
     // Turn off backlight to avoid unpredictable display on the LCD screen while initializing
     // the LCD panel driver. (Different LCD screens may need different levels)
-    ESP_ERROR_CHECK(gpio_set_level(EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_OFF_LEVEL));
+    //ESP_ERROR_CHECK(gpio_set_level(EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_OFF_LEVEL));
 
     // Reset the display
     ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));
@@ -151,7 +151,7 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_lcd_panel_swap_xy(panel_handle, true));
 
     // Turn on backlight (Different LCD screens may need different levels)
-    ESP_ERROR_CHECK(gpio_set_level(EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_ON_LEVEL));
+    //ESP_ERROR_CHECK(gpio_set_level(EXAMPLE_PIN_NUM_BK_LIGHT, EXAMPLE_LCD_BK_LIGHT_ON_LEVEL));
 
     // Initialize the effect displayed
     ESP_ERROR_CHECK(pretty_effect_init());
